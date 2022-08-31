@@ -16,7 +16,7 @@ srcPath = ""
 maskPath = ""
 outputPath = ""
 oVideoFilePath = ""
-fps = 25
+fps = 30
 bitrate = 2000
 
 
@@ -137,7 +137,7 @@ def parseImageList(inputPath):
 
 
 def videoToImage(videoPath, imageDir):
-    command = "ffmpeg -i {} -r {} {}%05d.png".format(videoPath, fps, imageDir)
+    command = "ffmpeg -i {} -r {} {}img_%03d.png".format(videoPath, fps, imageDir)
     if isDebug:
         print(command)
     ret = subprocess.Popen(command, shell=True)
@@ -145,6 +145,7 @@ def videoToImage(videoPath, imageDir):
 
 
 def removeAlpha(imageSrc, imageDst):
+    # 设置背景黑色，移除透明通道
     command = "convert {} -background black -alpha remove {}".format(imageSrc, imageDst)
     if isDebug:
         print(command)
@@ -153,6 +154,7 @@ def removeAlpha(imageSrc, imageDst):
 
 
 def separateAlphaChannel(imageFileOne, imageFileTwo):
+    # 分离透明通道
     command = "convert {} -channel A -separate {}".format(imageFileOne, imageFileTwo)
     if isDebug:
         print(command)
@@ -195,6 +197,7 @@ def zipAlphaChannelPro(imageSrc, imageDst):
 
 
 def appendImageLand(imageFileOne, imageFileTwo, imageFileAppend):
+    # 从左往右追加素材
     command = "convert +append {} {} {}".format(imageFileTwo, imageFileOne, imageFileAppend)
     if isDebug:
         print(command)
@@ -208,7 +211,7 @@ def deleteTempFile(filePath):
 
 
 def imagesToVideo(imagesPath, videoFile):
-    command = "ffmpeg -r {} -i {}%05d.jpg -vcodec libx264 -pix_fmt yuv420p -b {}k {}".format(fps, imagesPath, bitrate,
+    command = "ffmpeg -r {} -i {}img_%03d.jpg -vcodec libx264 -pix_fmt yuv420p -b {}k {}".format(fps, imagesPath, bitrate,
                                                                                              videoFile)
     if isDebug:
         print(command)
